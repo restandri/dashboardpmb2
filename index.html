@@ -254,12 +254,11 @@
     font-size:13px;
     table-layout:fixed;
   }
-  .col-no{ width:32px; }
-  .col-nama{ width:26%; }
-  .col-untan{ width:20%; }
-  .col-ump{ width:20%; }
+  .col-nama{ width:30%; }
+  .col-untan{ width:22%; }
+  .col-ump{ width:22%; }
   .col-nim{ width:16%; }
-  .col-status{ width:14%; }
+  .col-status{ width:10%; }
   table.data-table th{
     text-align:left;
     padding:10px 12px;
@@ -347,7 +346,7 @@
 
     table.data-table{ font-size:12px; }
     table.data-table th, table.data-table td{ padding:8px 9px; }
-    .col-no, .col-untan, .col-nim{ display:none; }
+    .col-untan, .col-nim{ display:none; }
     .col-nama{ width:46%; }
     .col-ump{ width:32%; }
     .col-status{ width:22%; }
@@ -414,7 +413,6 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th class="col-no">#</th>
               <th class="col-nama">Nama</th>
               <th class="col-untan">Prodi UNTAN</th>
               <th class="col-ump">Prodi UMP</th>
@@ -448,7 +446,7 @@
       </div>
       <p class="footnote">
         Alur: mahasiswa mendaftar seleksi mandiri di UNTAN dan dinyatakan lulus di Pilihan 3 dan 4 &rarr; dilanjutkan mendaftar admisi di UMP &rarr;
-        dari yang sudah mendaftar di admisi UMP dan datanya lengkap kemudian melakukan registrasi ulang (mendapat NIM) di UMP.
+        dari yang sudah mendaftar di admisi UMP dan datanya lengakp kemudian melakukan registrasi ulang (mendapat NIM) di UMP.
       </p>
     </div>
   </div>
@@ -542,11 +540,10 @@ function renderDashboard(records){
   document.getElementById('tableCount').textContent = `${lulusList.length.toLocaleString('id-ID')} mahasiswa`;
   const tbody = document.getElementById('tableBody');
   if (lulusList.length === 0){
-    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Tidak ada data</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Tidak ada data</td></tr>';
   } else {
     tbody.innerHTML = lulusList.map((r,i) => `
       <tr>
-        <td class="col-no">${i+1}</td>
         <td class="col-nama">${r.nama_untan || '-'}</td>
         <td class="col-untan">${r.lulus_untan || '-'}</td>
         <td class="col-ump">${r.lulus_ump_prodi || '-'}</td>
@@ -584,7 +581,7 @@ function renderEmptyState(){
 
   document.getElementById('tableCount').textContent = '0 mahasiswa';
   document.getElementById('tableBody').innerHTML =
-    '<tr><td colspan="6" class="empty-state">Belum ada data. Silakan unggah file Excel terlebih dahulu.</td></tr>';
+    '<tr><td colspan="5" class="empty-state">Belum ada data. Silakan unggah file Excel terlebih dahulu.</td></tr>';
 
   document.getElementById('flowVal1').textContent = '0';
   document.getElementById('flowVal2').textContent = '0';

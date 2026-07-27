@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Informasi Seleksi Mandiri UNTAN - UMP</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="2026/favicon.png">
+<style>
+  :root{
+    --navy-900:#0b1f3a;
+    --navy-800:#12294f;
+    --navy-700:#1a3766;
+    --navy-600:#25467e;
+    --navy-accent:#2f5aa8;
+    --bg:#eef0f3;
+    --panel:#ffffff;
+    --border:#dde1e7;
+    --text-main:#1b2433;
+    --text-sub:#6b7280;
+    --text-inverse:#f4f6fa;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Plus Jakarta Sans', sans-serif;
+    font-size:14px;
+    background:var(--bg);
+    color:var(--text-main);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{
+    max-width:1180px;
+    margin:0 auto;
+    padding:96px 20px 76px;
+  }
+
+  /* Fixed footer */
+  .site-footer{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    background:var(--navy-900);
+    color:var(--text-inverse);
+    text-align:center;
+    padding:10px 16px;
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:0.2px;
+    z-index:10;
+    box-shadow:0 -1px 0 var(--border);
+  }
+
+  /* Header */
+  .header{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    flex-wrap:wrap;
+    background:var(--navy-900);
+    color:var(--text-inverse);
+    padding:14px 20px;
+    z-index:10;
+    box-shadow:0 1px 0 var(--border);
+  }
+  .header-title{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .logo-mark{
+    width:44px;height:44px;
+    border-radius:10px;
+    background:rgba(244,246,250,0.12);
+    border:1px solid rgba(244,246,250,0.25);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--text-inverse);
+    font-weight:800;
+    font-size:15px;
+    letter-spacing:0.5px;
+    flex-shrink:0;
+  }
+  .header h1{
+    font-size:18px;
+    font-weight:800;
+    margin:0 0 2px 0;
+    color:var(--text-inverse);
+    letter-spacing:-0.2px;
+  }
+  .header p{
+    margin:0;
+    font-size:12.5px;
+    color:#c3cbdb;
+  }
+
+  .upload-box{
+    background:rgba(244,246,250,0.08);
+    border:1px solid rgba(244,246,250,0.2);
+    border-radius:10px;
+    padding:8px 12px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:13px;
+  }
+  .upload-box .file-btn{
+    background:var(--text-inverse);
+    color:var(--navy-900);
+    padding:8px 14px;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:700;
+    font-size:13px;
+    white-space:nowrap;
+    transition:opacity .15s ease;
+    border:none;
+    display:inline-flex;
+    align-items:center;
+    font-family:inherit;
+  }
+  .upload-box .file-btn:hover{ opacity:0.85; }
+  .upload-box input[type=file]{ display:none; }
+  .upload-status{
+    color:#c3cbdb;
+    font-size:12.5px;
+    max-width:220px;
+  }
+  .upload-status.ok{ color:#8fd6b4; }
+  .upload-status.err{ color:#f0a39d; }
+
+  /* KPI grid */
+  .kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:16px;
+    margin-bottom:20px;
+  }
+  .kpi-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:20px 22px;
+    position:relative;
+    overflow:hidden;
+  }
+  .kpi-card::before{
+    content:"";
+    position:absolute;
+    top:0;left:0;
+    width:4px;height:100%;
+    background:var(--navy-700);
+  }
+  .kpi-card .kpi-label{
+    font-size:12.5px;
+    color:var(--text-sub);
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.4px;
+    margin-bottom:10px;
+  }
+  .kpi-card .kpi-value{
+    font-size:34px;
+    font-weight:800;
+    color:var(--navy-900);
+    line-height:1;
+    margin-bottom:8px;
+  }
+  .kpi-card .kpi-sub{
+    font-size:12.5px;
+    color:var(--text-sub);
+  }
+  .kpi-card .kpi-sub b{ color:var(--navy-700); font-weight:700; }
+
+  /* Panels */
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:22px 24px;
+    margin-bottom:20px;
+  }
+  .panel-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .panel-head h2{
+    font-size:15.5px;
+    font-weight:700;
+    color:var(--navy-900);
+    margin:0;
+  }
+  .panel-head .panel-note{
+    font-size:12.5px;
+    color:var(--text-sub);
+  }
+
+  .bar-row{
+    display:grid;
+    grid-template-columns:220px 1fr 46px;
+    align-items:center;
+    gap:12px;
+    padding:7px 0;
+  }
+  .bar-row .bar-label{
+    font-size:13px;
+    font-weight:600;
+    color:var(--text-main);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .bar-track{
+    background:#eef0f4;
+    border-radius:6px;
+    height:14px;
+    overflow:hidden;
+  }
+  .bar-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--navy-600), var(--navy-800));
+    border-radius:6px;
+    transition:width .6s ease;
+  }
+  .bar-value{
+    font-size:13px;
+    font-weight:700;
+    color:var(--navy-800);
+    text-align:right;
+  }
+
+  table.data-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+  }
+  table.data-table th{
+    text-align:left;
+    padding:10px 12px;
+    background:#f3f4f7;
+    color:var(--navy-800);
+    font-weight:700;
+    border-bottom:1px solid var(--border);
+    white-space:nowrap;
+    position:sticky;
+    top:0;
+    z-index:1;
+  }
+  table.data-table td{
+    padding:9px 12px;
+    border-bottom:1px solid #eef0f3;
+    color:var(--text-main);
+  }
+  table.data-table tr:hover td{ background:#f7f8fa; }
+  .badge{
+    display:inline-block;
+    padding:2px 9px;
+    border-radius:999px;
+    font-size:11.5px;
+    font-weight:700;
+  }
+  .badge-ok{ background:#e2ebf7; color:var(--navy-800); }
+  .badge-muted{ background:#eef0f3; color:var(--text-sub); }
+
+  .two-col{
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:20px;
+  }
+
+  .footnote{
+    font-size:12px;
+    color:var(--text-sub);
+    line-height:1.6;
+    margin-top:4px;
+  }
+
+  .empty-state{
+    text-align:center;
+    padding:30px 10px;
+    color:var(--text-sub);
+    font-size:13px;
+  }
+
+  @media (max-width: 860px){
+    .kpi-grid{ grid-template-columns:1fr; }
+    .two-col{ grid-template-columns:1fr; }
+    .bar-row{ grid-template-columns:130px 1fr 40px; }
+    .header{ flex-direction:column; align-items:stretch; }
+    .upload-box{ width:100%; }
+    .app{ padding-top:150px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="header">
+    <div class="header-title">
+      <div class="logo-mark"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <rect width="7" height="9" x="3" y="3" rx="1" /> <rect width="7" height="5" x="14" y="3" rx="1" /> <rect width="7" height="9" x="14" y="12" rx="1" /> <rect width="7" height="5" x="3" y="16" rx="1" /> </svg></div>
+      <div>
+        <h1>Informasi Seleksi Mandiri UNTAN - UMP</h1>
+        <p>Universitas Tanjungpura &rarr; Universitas Muhammadiyah Pontianak</p>
+      </div>
+    </div>
+    <div class="upload-box">
+      <label class="file-btn" for="fileInput" title="Unggah Data"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <path d="M12 3v12" /> <path d="m17 8-5-5-5 5" /> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /> </svg></label>
+      <input type="file" id="fileInput" accept=".xlsx,.xls" />
+      <button type="button" class="file-btn" id="syncSheetBtn" onclick="syncFromGoogleSheet()" title="Koneksi Data Google Sheet">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /> <path d="M3 3v5h5" /> <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" /> <path d="M16 16h5v5" /> </svg>
+      </button>
+      <span class="upload-status" id="uploadStatus">Memuat...</span>
+    </div>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Pendaftar Memilih UMP di Pilihan 3 dan 4</div>
+      <div class="kpi-value" id="kpiUntan">0</div>
+      <div class="kpi-sub">Mahasiswa yang dinyatakan Lulus di Pilihan 3 dan 4</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Melanjutkan Daftar di Admisi UMP</div>
+      <div class="kpi-value" id="kpiCrossover">0</div>
+      <div class="kpi-sub">Dari Total 270 yang dinyatakan Lulus di Pilihan 3 dan 4</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Menyelesaikan Pendaftaran</div>
+      <div class="kpi-value" id="kpiLulusUMP">0</div>
+      <div class="kpi-sub">Dari <b id="kpiRegUlang">0</b> yang sudah mendaftar di Admisi UMP</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Jumlah Mahasiswa Mendaftar UMP per Program Studi</h2>
+      <span class="panel-note" id="prodiNote">Berdasarkan mahasiswa yang sudah registrasi ulang (ber-NIM)</span>
+    </div>
+    <div id="prodiChart"></div>
+  </div>
+
+  <div class="two-col">
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Rincian mahasiswa mendaftar di UMP</h2>
+        <span class="panel-note" id="tableCount">0 mahasiswa</span>
+      </div>
+      <div style="max-height:360px; overflow:auto;">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Nama</th>
+              <th>Prodi UNTAN</th>
+              <th>Prodi UMP</th>
+              <th>NIM</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Ringkasan Alur Pendaftaran</h2>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Lulus Pilihan 3 dan 4</div>
+        <div class="bar-track"><div class="bar-fill" id="flowBar1" style="width:0%"></div></div>
+        <div class="bar-value" id="flowVal1">0</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Daftar Admisi UMP</div>
+        <div class="bar-track"><div class="bar-fill" id="flowBar2" style="width:0%"></div></div>
+        <div class="bar-value" id="flowVal2">0</div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Registrasi Ulang UMP</div>
+        <div class="bar-track"><div class="bar-fill" id="flowBar3" style="width:0%"></div></div>
+        <div class="bar-value" id="flowVal3">0</div>
+      </div>
+      <p class="footnote">
+        Alur: mahasiswa mendaftar seleksi mandiri di UNTAN dan dinyatakan lulus di Pilihan 3 dan 4 &rarr; dilanjutkan mendaftar admisi di UMP &rarr;
+        dari yang sudah mendaftar di admisi UMP dan datanya lengakp kemudian melakukan registrasi ulang (mendapat NIM) di UMP.
+      </p>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">Andri Restandi &mdash; Keep It Simple, Stupid.</footer>
+
+<script>
+let currentData = [];
+
+const DEFAULT_DATA_URL = 'data.json';
+
+function normalize(val){
+  if (val === null || val === undefined) return null;
+  const s = String(val).trim();
+  return s.length ? s : null;
+}
+
+// Convert raw rows (array of arrays with header) into normalized objects
+function rowsToRecords(rows){
+  // find header row (first row containing 'NAMA UNTAN')
+  let headerIdx = 0;
+  for (let i=0;i<rows.length;i++){
+    const joined = (rows[i]||[]).map(c=>String(c||'').toUpperCase()).join('|');
+    if (joined.includes('NAMA UNTAN')){ headerIdx = i; break; }
+  }
+  const header = rows[headerIdx].map(c=>String(c||'').trim().toUpperCase());
+  const idx = {
+    no: header.indexOf('#'),
+    nama_untan: header.indexOf('NAMA UNTAN'),
+    lulus_untan: header.indexOf('LULUS UNTAN'),
+    nama_ump: header.indexOf('NAMA UMP'),
+    nim: header.indexOf('NIM'),
+    lulus_ump_prodi: header.indexOf('LULUS UMP')
+  };
+  const records = [];
+  for (let i=headerIdx+1;i<rows.length;i++){
+    const r = rows[i];
+    if (!r || r.every(c => c===null || c===undefined || String(c).trim()==='')) continue;
+    records.push({
+      no: idx.no>=0 ? r[idx.no] : records.length+1,
+      nama_untan: normalize(idx.nama_untan>=0 ? r[idx.nama_untan] : null),
+      lulus_untan: normalize(idx.lulus_untan>=0 ? r[idx.lulus_untan] : null),
+      nama_ump: normalize(idx.nama_ump>=0 ? r[idx.nama_ump] : null),
+      nim: normalize(idx.nim>=0 ? r[idx.nim] : null),
+      lulus_ump_prodi: normalize(idx.lulus_ump_prodi>=0 ? r[idx.lulus_ump_prodi] : null),
+    });
+  }
+  return records.filter(rec => rec.nama_untan);
+}
+
+function renderDashboard(records){
+  currentData = records;
+
+  const totalUntan = records.filter(r => r.nama_untan).length;
+  const crossoverUMP = records.filter(r => r.nama_ump).length; // daftar UNTAN & lulus admisi UMP
+  const regUlang = records.filter(r => r.nim).length; // ber-NIM = registrasi ulang
+
+  document.getElementById('kpiUntan').textContent = totalUntan.toLocaleString('id-ID');
+  document.getElementById('kpiCrossover').textContent = crossoverUMP.toLocaleString('id-ID');
+  document.getElementById('kpiLulusUMP').textContent = regUlang.toLocaleString('id-ID');
+  document.getElementById('kpiRegUlang').textContent = crossoverUMP.toLocaleString('id-ID');
+
+  // Prodi breakdown: prefer lulus_ump_prodi (registered), fallback to lulus_untan for those with nama_ump if prodi missing
+  const prodiCount = {};
+  records.forEach(r => {
+    if (r.lulus_ump_prodi){
+      prodiCount[r.lulus_ump_prodi] = (prodiCount[r.lulus_ump_prodi]||0) + 1;
+    }
+  });
+  const prodiEntries = Object.entries(prodiCount).sort((a,b)=>b[1]-a[1]);
+  const maxProdi = prodiEntries.length ? prodiEntries[0][1] : 1;
+
+  const chartEl = document.getElementById('prodiChart');
+  if (prodiEntries.length === 0){
+    chartEl.innerHTML = '<div class="empty-state">Belum ada data prodi (kolom LULUS UMP kosong / belum ada yang registrasi ulang).</div>';
+  } else {
+    chartEl.innerHTML = prodiEntries.map(([prodi,count]) => `
+      <div class="bar-row">
+        <div class="bar-label" title="${prodi}">${prodi}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${(count/maxProdi*100).toFixed(1)}%"></div></div>
+        <div class="bar-value">${count}</div>
+      </div>
+    `).join('');
+  }
+  document.getElementById('prodiNote').textContent =
+    `Total ${regUlang.toLocaleString('id-ID')} mahasiswa dengan data prodi (sudah registrasi ulang)`;
+
+  // Table: everyone with nama_ump filled (lulus admisi UMP)
+  const lulusList = records.filter(r => r.nama_ump).sort((a,b)=> (a.nama_untan||'').localeCompare(b.nama_untan||''));
+  document.getElementById('tableCount').textContent = `${lulusList.length.toLocaleString('id-ID')} mahasiswa`;
+  const tbody = document.getElementById('tableBody');
+  if (lulusList.length === 0){
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-state">Tidak ada data</td></tr>';
+  } else {
+    tbody.innerHTML = lulusList.map((r,i) => `
+      <tr>
+        <td>${i+1}</td>
+        <td>${r.nama_untan || '-'}</td>
+        <td>${r.lulus_untan || '-'}</td>
+        <td>${r.lulus_ump_prodi || '-'}</td>
+        <td>${r.nim || '-'}</td>
+        <td>${r.nim
+            ? '<span class="badge badge-ok">Selesai</span>'
+            : '<span class="badge badge-muted">Tunda</span>'}</td>
+      </tr>
+    `).join('');
+  }
+
+  // Flow bars
+  const maxFlow = totalUntan || 1;
+  document.getElementById('flowVal1').textContent = totalUntan.toLocaleString('id-ID');
+  document.getElementById('flowVal2').textContent = crossoverUMP.toLocaleString('id-ID');
+  document.getElementById('flowVal3').textContent = regUlang.toLocaleString('id-ID');
+  document.getElementById('flowBar1').style.width = (totalUntan/maxFlow*100).toFixed(1) + '%';
+  document.getElementById('flowBar2').style.width = (crossoverUMP/maxFlow*100).toFixed(1) + '%';
+  document.getElementById('flowBar3').style.width = (regUlang/maxFlow*100).toFixed(1) + '%';
+}
+
+// Kunci penyimpanan data di browser (persist saat refresh/close)
+const STORAGE_KEY = 'pmb_untan_ump_dashboard_data';
+
+function renderEmptyState(){
+  currentData = [];
+  document.getElementById('kpiUntan').textContent = '0';
+  document.getElementById('kpiCrossover').textContent = '0';
+  document.getElementById('kpiLulusUMP').textContent = '0';
+  document.getElementById('kpiRegUlang').textContent = '0';
+
+  document.getElementById('prodiChart').innerHTML =
+    '<div class="empty-state">Belum ada data. Silakan unggah file Excel terlebih dahulu.</div>';
+  document.getElementById('prodiNote').textContent = 'Menunggu data diunggah';
+
+  document.getElementById('tableCount').textContent = '0 mahasiswa';
+  document.getElementById('tableBody').innerHTML =
+    '<tr><td colspan="6" class="empty-state">Belum ada data. Silakan unggah file Excel terlebih dahulu.</td></tr>';
+
+  document.getElementById('flowVal1').textContent = '0';
+  document.getElementById('flowVal2').textContent = '0';
+  document.getElementById('flowVal3').textContent = '0';
+  document.getElementById('flowBar1').style.width = '0%';
+  document.getElementById('flowBar2').style.width = '0%';
+  document.getElementById('flowBar3').style.width = '0%';
+}
+
+function saveToStorage(records){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+  } catch(e){
+    console.error('Gagal menyimpan data ke penyimpanan lokal', e);
+  }
+}
+
+function loadDefault(){
+  const statusEl = document.getElementById('uploadStatus');
+  try{
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved){
+      const records = JSON.parse(saved).map(r => ({
+        no: r.no,
+        nama_untan: normalize(r.nama_untan),
+        lulus_untan: normalize(r.lulus_untan),
+        nama_ump: normalize(r.nama_ump),
+        nim: normalize(r.nim),
+        lulus_ump_prodi: normalize(r.lulus_ump_prodi),
+      }));
+      renderDashboard(records);
+      statusEl.textContent = `Data tersimpan dimuat (${records.length} baris)`;
+      statusEl.className = 'upload-status ok';
+      return;
+    }
+  } catch(e){
+    console.error('Gagal memuat data tersimpan', e);
+  }
+  // Belum ada data tersimpan -> tampilkan dashboard kosong
+  renderEmptyState();
+  statusEl.textContent = 'Belum ada data. Silakan unggah file Excel.';
+  statusEl.className = 'upload-status';
+}
+
+document.getElementById('fileInput').addEventListener('change', function(e){
+  const file = e.target.files[0];
+  if (!file) return;
+  const statusEl = document.getElementById('uploadStatus');
+  statusEl.textContent = 'Memproses file...';
+  statusEl.className = 'upload-status';
+
+  const reader = new FileReader();
+  reader.onload = function(evt){
+    try{
+      const data = new Uint8Array(evt.target.result);
+      const wb = XLSX.read(data, {type:'array'});
+      const sheetName = wb.SheetNames.includes('Sheet1') ? 'Sheet1' : wb.SheetNames[0];
+      const ws = wb.Sheets[sheetName];
+      const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:null});
+      const records = rowsToRecords(rows);
+      if (records.length === 0){
+        throw new Error('Tidak ada baris data yang valid ditemukan');
+      }
+      renderDashboard(records);
+      saveToStorage(records);
+      statusEl.textContent = `Berhasil memuat ${records.length} baris dari "${file.name}"`;
+      statusEl.className = 'upload-status ok';
+    } catch(err){
+      console.error(err);
+      statusEl.textContent = 'Gagal membaca file. Pastikan format kolom sesuai.';
+      statusEl.className = 'upload-status err';
+    }
+  };
+  reader.readAsArrayBuffer(file);
+});
+
+// GOOGLE SHEET SYNC
+const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSE-9WOkpk7eHTDakctJmpT5zelGPRcNfby868H0wdTn6hUnC3r6Qf8Pjw-EOoI0teeDQnn3sENCi7d/pub?gid=0&single=true&output=csv";
+
+async function syncFromGoogleSheet(){
+  const statusEl = document.getElementById('uploadStatus');
+  statusEl.textContent = 'Mengambil data dari Google Sheet...';
+  statusEl.className = 'upload-status';
+  try{
+    const res = await fetch(GOOGLE_SHEET_CSV_URL + '&cachebust=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) throw new Error('Gagal mengambil data (status ' + res.status + ')');
+    const csvText = await res.text();
+    const wb = XLSX.read(csvText, { type: 'string' });
+    const sheetName = wb.SheetNames.includes('Sheet1') ? 'Sheet1' : wb.SheetNames[0];
+    const ws = wb.Sheets[sheetName];
+    const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
+    const records = rowsToRecords(rows);
+    if (records.length === 0){
+      throw new Error('Data pada Google Sheet kosong atau format kolom tidak sesuai');
+    }
+    renderDashboard(records);
+    saveToStorage(records);
+    statusEl.textContent = `Berhasil memuat ${records.length} baris dari Google Sheet`;
+    statusEl.className = 'upload-status ok';
+  } catch(err){
+    console.error(err);
+    statusEl.textContent = 'Gagal mengambil data dari Google Sheet';
+    statusEl.className = 'upload-status err';
+    alert('Gagal mengambil data dari Google Sheet: ' + err.message);
+  }
+}
+
+loadDefault();
+</script>
+
+</body>
+</html>

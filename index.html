@@ -533,7 +533,7 @@ function renderDashboard(records){
     `).join('');
   }
   document.getElementById('prodiNote').textContent =
-    `Total ${regUlang.toLocaleString('id-ID')} mahasiswa dengan data prodi (sudah registrasi ulang)`;
+    `Total ${regUlang.toLocaleString('id-ID')} mahasiswa dengan data Program Studi (sudah registrasi ulang)`;
 
   // Table: everyone with nama_ump filled (lulus admisi UMP)
   const lulusList = records.filter(r => r.nama_ump).sort((a,b)=> (a.nama_untan||'').localeCompare(b.nama_untan||''));

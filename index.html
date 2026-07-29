@@ -212,7 +212,7 @@
 
   .bar-row{
     display:grid;
-    grid-template-columns: 250px 1fr 46px;
+    grid-template-columns: 300px 1fr 46px;
     align-items:center;
     gap:12px;
     padding:7px 0;
@@ -253,14 +253,14 @@
   table.data-table{
     width:100%;
     border-collapse:collapse;
-    font-size:11px;
+    font-size:12px;
     table-layout:fixed;
   }
-  .col-nama{ width:28%; }
-  .col-untan{ width:20%; }
-  .col-ump{ width:20%; }
-  .col-nim{ width:17%; }
-  .col-status{ width:15%; }
+  .col-nama{ width:24%; }
+  .col-untan{ width:28%; }
+  .col-ump{ width:28%; }
+  .col-nim{ width:10%; }
+  .col-status{ width:10%; }
   table.data-table th{
     text-align:left;
     padding:10px 12px;
@@ -287,24 +287,11 @@
     display:inline-block;
     padding:2px 9px;
     border-radius:999px;
-    font-size:11px;
+    font-size:12px;
     font-weight:700;
   }
   .badge-ok{ background:#e2ebf7; color:var(--navy-800); }
   .badge-muted{ background:#eef0f3; color:var(--text-sub); }
-
-  .two-col{
-    display:grid;
-    grid-template-columns:1.1fr 0.9fr;
-    gap:20px;
-  }
-
-  .footnote{
-    font-size:12px;
-    color:var(--text-sub);
-    line-height:1.6;
-    margin-top:4px;
-  }
 
   .empty-state{
     text-align:center;
@@ -315,7 +302,6 @@
 
   @media (max-width: 860px){
     .kpi-grid{ grid-template-columns:1fr; }
-    .two-col{ grid-template-columns:1fr; }
     .bar-row{ grid-template-columns:130px 1fr 40px; }
     .header{ flex-direction:column; align-items:stretch; }
     .upload-box{ width:100%; }
@@ -408,51 +394,24 @@
     <div id="prodiChart"></div>
   </div>
 
-  <div class="two-col">
-    <div class="panel">
-      <div class="panel-head">
-        <h2>Rincian mahasiswa mendaftar di UMP</h2>
-        <span class="panel-note" id="tableCount">0 mahasiswa</span>
-      </div>
-      <div class="table-scroll">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th class="col-nama">Nama</th>
-              <th class="col-untan">Prodi UNTAN</th>
-              <th class="col-ump">Prodi UMP</th>
-              <th class="col-nim">NIM</th>
-              <th class="col-status">Status</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody"></tbody>
-        </table>
-      </div>
+  <div class="panel">
+    <div class="panel-head">
+      <h2>Rincian mahasiswa mendaftar di UMP</h2>
+      <span class="panel-note" id="tableCount">0 mahasiswa</span>
     </div>
-
-    <div class="panel">
-      <div class="panel-head">
-        <h2>Ringkasan Alur Pendaftaran</h2>
-      </div>
-      <div class="bar-row">
-        <div class="bar-label">Lulus Pilihan 3 dan 4</div>
-        <div class="bar-track"><div class="bar-fill" id="flowBar1" style="width:0%"></div></div>
-        <div class="bar-value" id="flowVal1">0</div>
-      </div>
-      <div class="bar-row">
-        <div class="bar-label">Daftar Admisi UMP</div>
-        <div class="bar-track"><div class="bar-fill" id="flowBar2" style="width:0%"></div></div>
-        <div class="bar-value" id="flowVal2">0</div>
-      </div>
-      <div class="bar-row">
-        <div class="bar-label">Registrasi Ulang UMP</div>
-        <div class="bar-track"><div class="bar-fill" id="flowBar3" style="width:0%"></div></div>
-        <div class="bar-value" id="flowVal3">0</div>
-      </div>
-      <p class="footnote">
-        Alur: calon mahasiswa mendaftar seleksi mandiri di UNTAN dan dinyatakan lulus di Pilihan 3 dan 4 &rarr; dilanjutkan mendaftar admisi di UMP &rarr;
-        dari yang sudah mendaftar di admisi UMP dan datanya lengkap kemudian melakukan registrasi ulang dan mendapat NIM di UMP.
-      </p>
+    <div class="table-scroll">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="col-nama">Nama</th>
+            <th class="col-untan">Prodi UNTAN</th>
+            <th class="col-ump">Prodi UMP</th>
+            <th class="col-nim">NIM</th>
+            <th class="col-status">Status</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
     </div>
   </div>
 </div>
@@ -560,14 +519,6 @@ function renderDashboard(records){
     `).join('');
   }
 
-  // Flow bars
-  const maxFlow = totalUntan || 1;
-  document.getElementById('flowVal1').textContent = totalUntan.toLocaleString('id-ID');
-  document.getElementById('flowVal2').textContent = crossoverUMP.toLocaleString('id-ID');
-  document.getElementById('flowVal3').textContent = regUlang.toLocaleString('id-ID');
-  document.getElementById('flowBar1').style.width = (totalUntan/maxFlow*100).toFixed(1) + '%';
-  document.getElementById('flowBar2').style.width = (crossoverUMP/maxFlow*100).toFixed(1) + '%';
-  document.getElementById('flowBar3').style.width = (regUlang/maxFlow*100).toFixed(1) + '%';
 }
 
 // Kunci penyimpanan data di browser (persist saat refresh/close)
@@ -588,12 +539,6 @@ function renderEmptyState(){
   document.getElementById('tableBody').innerHTML =
     '<tr><td colspan="5" class="empty-state">Belum ada data. Silakan unggah dokumen Excel terlebih dahulu.</td></tr>';
 
-  document.getElementById('flowVal1').textContent = '0';
-  document.getElementById('flowVal2').textContent = '0';
-  document.getElementById('flowVal3').textContent = '0';
-  document.getElementById('flowBar1').style.width = '0%';
-  document.getElementById('flowBar2').style.width = '0%';
-  document.getElementById('flowBar3').style.width = '0%';
 }
 
 function saveToStorage(records){

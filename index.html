@@ -589,6 +589,8 @@ const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS
 
 async function syncFromGoogleSheet(){
   const statusEl = document.getElementById('uploadStatus');
+  statusEl.textContent = 'Mengambil data dari Google Sheet...';
+  statusEl.className = 'upload-status';
   try{
     const res = await fetch(GOOGLE_SHEET_CSV_URL + '&cachebust=' + Date.now(), { cache: 'no-store' });
     if (!res.ok) throw new Error('Gagal mengambil data (status ' + res.status + ')');
@@ -603,8 +605,12 @@ async function syncFromGoogleSheet(){
     }
     renderDashboard(records);
     saveToStorage(records);
+    statusEl.textContent = `Berhasil memuat ${records.length} baris dari Google Sheet`;
+    statusEl.className = 'upload-status ok';
   } catch(err){
     console.error(err);
+    statusEl.textContent = 'Gagal mengambil data dari Google Sheet';
+    statusEl.className = 'upload-status err';
     alert('Gagal mengambil data dari Google Sheet: ' + err.message);
   }
 }
